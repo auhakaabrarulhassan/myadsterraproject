@@ -7,6 +7,35 @@
 // 1. GLOBAL STATE & THEME MANAGEMENT
 // ==========================================================================
 
+// Dynamic Script Loader for Zero-Delay First Paint
+const loadedScripts = new Set();
+function loadScriptAsync(src) {
+    if (loadedScripts.has(src)) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = true;
+        s.onload = () => {
+            loadedScripts.add(src);
+            resolve();
+        };
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
+// Preload remaining libraries during idle time (so UI and Ads get 100% bandwidth first)
+if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => {
+        loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js');
+        loadScriptAsync('https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js');
+    }, { timeout: 2000 });
+} else {
+    setTimeout(() => {
+        loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js');
+    }, 1500);
+}
+
 const state = {
     activeTab: 'compressor',
     theme: localStorage.getItem('toolsphere_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
@@ -449,8 +478,8 @@ async function processBatchConversion() {
     }
 
     if (!window.JSZip) {
-        showToast('Batch engine loading, please try again in a moment.', 'info');
-        return;
+        showToast('Loading batch ZIP module...', 'info');
+        await loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
     }
 
     const zip = new JSZip();
@@ -521,7 +550,7 @@ function setQrType(type, btn) {
     updateQRCode();
 }
 
-function updateQRCode() {
+async function updateQRCode() {
     let payload = qrContent.value.trim();
 
     if (state.qrcode.type === 'wifi') {
@@ -537,6 +566,10 @@ function updateQRCode() {
 
     qrBox.innerHTML = '';
     
+    if (!window.QRCode) {
+        await loadScriptAsync('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js');
+    }
+
     if (window.QRCode) {
         state.qrcode.instance = new QRCode(qrBox, {
             text: payload,
@@ -577,8 +610,15 @@ function downloadQRCodePNG() {
     showToast('QR Code saved as PNG!');
 }
 
-// Initial QR Render
-setTimeout(updateQRCode, 200);
+// Safe Initial QR Render
+function initQRCodeSafe() {
+    if (window.QRCode) {
+        updateQRCode();
+    } else {
+        setTimeout(initQRCodeSafe, 100);
+    }
+}
+initQRCodeSafe();
 
 // ==========================================================================
 // 8. TOOL 4: TEXT & CASE UTILITIES
@@ -818,8 +858,19 @@ function formatBytes(bytes, decimals = 1) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-// Initialize Lucide Icons on start
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize Lucide Icons and Theme on start
+function initAppBootstrap() {
     if (window.lucide) lucide.createIcons();
-    applyTheme(state.theme);
-});
+    else setTimeout(initAppBootstrap, 100);
+
+    // Register Service Worker for Instant 0.00s Loading on Repeat Visits
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAppBootstrap);
+} else {
+    initAppBootstrap();
+}

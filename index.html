@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolSphere — 100% Free Client-Side Image &amp; File Utility SaaS</title>
+    <meta name="description" content="Fast, private, and 100% free online tools. Compress and convert images, generate custom QR codes, format text, and extract color palettes right in your browser with zero server uploads.">
+    <meta name="keywords" content="image compressor, image converter, webp to png, png to jpg, qr code generator, word counter, case converter, client side tools, free online utilities">
+    <meta name="author" content="ToolSphere">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://toolsphere.app/">
+    <meta property="og:title" content="ToolSphere — Free Private Image &amp; File Utilities">
+    <meta property="og:description" content="Fast, private client-side utilities. Compress &amp; convert images, build QR codes, and format text with 0 server uploads.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="ToolSphere — Free Private Image &amp; File Utilities">
+    <meta property="twitter:description" content="Fast, private client-side utilities. Compress &amp; convert images, build QR codes, and format text.">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            50: '#6366f1',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            950: '#1e1b4b',
+                        },
+                        darkBg: '#0b0f19',
+                        darkCard: '#111827',
+                        darkBorder: '#1f2937'
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- External Client-Side CDN Libraries (Zero Paid APIs) -->
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- JSZip for batch downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Canvas Confetti for user delight on processing -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Schema.org Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ToolSphere",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "description": "100% Free and Private client-side utility SaaS for image compression, format conversion, QR code generation, and text formatting.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Client-side Image Compressor & Resizer",
+        "Multi-Format Image Converter (WEBP, PNG, JPG, BMP)",
+        "Custom QR Code Maker with color styling",
+        "Text and Case Converter with Word Statistics",
+        "Image Color Palette Extractor"
+      ]
+    }
+    </script>
+
+    <!-- FAQ Structured Data for Google Rich Snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded to any external server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No! ToolSphere operates 100% in your local browser using HTML5 Canvas and JavaScript Web APIs. Your images, text, and files never leave your device, ensuring complete privacy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is ToolSphere free to use forever?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, ToolSphere is completely free without limits, watermarks, or subscription paywalls. We are supported solely through unobtrusive display advertisements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the image compressor reduce file size without losing quality?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The tool uses smart perceptual quantization algorithms directly through the browser Canvas API to strip unneeded metadata and optimize color compression efficiently."
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-darkBg dark:text-slate-100 font-sans transition-colors duration-200 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Anti-Adblock / Support Notice (Subtle top bar) -->
+    <div id="ad-support-banner" class="bg-gradient-to-r from-brand-600 to-indigo-700 text-white text-xs py-1.5 px-4 text-center flex items-center justify-center gap-2">
+        <i data-lucide="heart" class="w-3.5 h-3.5 fill-current text-rose-300"></i>
+        <span><strong>100% Free &amp; Private Tools</strong> — Made possible by friendly ads. Please support us by keeping your ad blocker paused!</span>
+        <button onclick="document.getElementById('ad-support-banner').style.display='none'" class="ml-2 hover:opacity-75 focus:outline-none" aria-label="Dismiss banner">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-lg bg-white/80 dark:bg-darkBg/80 border-b border-slate-200 dark:border-darkBorder transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+                    <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
+                </div>
+                <div>
+                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-slate-900 via-brand-700 to-indigo-600 dark:from-white dark:via-brand-300 dark:to-indigo-300 bg-clip-text text-transparent">ToolSphere</span>
+                    <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 ml-1.5 rounded-full bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-300 border border-brand-200 dark:border-brand-800">SaaS v1.0</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Items -->
+            <nav class="hidden md:flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800/60 p-1 rounded-xl border border-slate-200/80 dark:border-darkBorder">
+                <button onclick="switchTab('compressor')" class="nav-tab active flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all" data-tab="compressor">
+                    <i data-lucide="minimize-2" class="w-4 h-4"></i>
+                    <span>Compressor</span>
+                </button>
+                <button onclick="switchTab('converter')" class="nav-tab flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" data-tab="converter">
+                    <i data-lucide="repeat" class="w-4 h-4"></i>
+                    <span>Converter</span>
+                </button>
+                <button onclick="switchTab('qrcode')" class="nav-tab flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" data-tab="qrcode">
+                    <i data-lucide="qr-code" class="w-4 h-4"></i>
+                    <span>QR Maker</span>
+                </button>
+                <button onclick="switchTab('texttools')" class="nav-tab flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" data-tab="texttools">
+                    <i data-lucide="type" class="w-4 h-4"></i>
+                    <span>Text Suite</span>
+                </button>
+                <button onclick="switchTab('palette')" class="nav-tab flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" data-tab="palette">
+                    <i data-lucide="palette" class="w-4 h-4"></i>
+                    <span>Color Studio</span>
+                </button>
+            </nav>
+
+            <!-- Actions (Theme Toggle & Share) -->
+            <div class="flex items-center gap-2.5">
+                <button id="theme-toggle" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle Theme">
+                    <i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+                    <i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+                </button>
+
+                <button onclick="shareToolSphere()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white shadow-sm shadow-brand-500/30 transition active:scale-95">
+                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                    <span>Share</span>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800" aria-label="Open Menu">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-darkBorder bg-white dark:bg-darkBg px-4 py-3 space-y-1">
+            <button onclick="switchTab('compressor'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i data-lucide="minimize-2" class="w-4 h-4 text-brand-600"></i> Smart Image Compressor
+            </button>
+            <button onclick="switchTab('converter'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i data-lucide="repeat" class="w-4 h-4 text-brand-600"></i> Image Format Converter
+            </button>
+            <button onclick="switchTab('qrcode'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i data-lucide="qr-code" class="w-4 h-4 text-brand-600"></i> Custom QR Code Generator
+            </button>
+            <button onclick="switchTab('texttools'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i data-lucide="type" class="w-4 h-4 text-brand-600"></i> Text &amp; Case Utilities
+            </button>
+            <button onclick="switchTab('palette'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <i data-lucide="palette" class="w-4 h-4 text-brand-600"></i> Color Palette Studio
+            </button>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- ADSTERRA AD SLOT 1: TOP HEADER LEADERBOARD -->
+    <!-- Recommended Adsterra Format: 728x90 Banner or Native Banner -->
+    <!-- ========================================== -->
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-2">
+        <div id="adsterra-header-slot" class="ad-placeholder-container min-h-[90px] w-full flex flex-col items-center justify-center rounded-xl bg-slate-100/70 dark:bg-slate-800/40 border border-dashed border-slate-300 dark:border-slate-700 p-2 text-center transition hover:border-brand-400">
+            <!-- Replace the placeholder below with your Adsterra 728x90 Script Tag -->
+            <div class="ad-tag-label flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500"></i>
+                <span>Sponsored Advertisement (728x90 / Responsive)</span>
+            </div>
+            <div class="ad-content-slot flex items-center justify-center w-full overflow-hidden">
+                <!-- ADSTERRA CODE INJECTION POINT: HEADER BANNER (728x90) -->
+                <script>
+                  atOptions = {
+                    'key' : 'c561e3c8227d2736815a3e3daa566083',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://www.highrevenueformat.com/c561e3c8227d2736815a3e3daa566083/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden pt-6 pb-8 sm:pt-10 sm:pb-12 text-center max-w-4xl mx-auto px-4">
+        <!-- Floating background badges -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-800/80 text-brand-700 dark:text-brand-300 text-xs font-semibold mb-4 shadow-sm">
+            <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            100% Client-Side • Zero Data Stored • Instant &amp; Free
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+            Power Utilities for Creators &amp; Devs, <br class="hidden sm:inline">
+            <span class="bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 dark:from-brand-400 dark:via-indigo-300 dark:to-purple-400 bg-clip-text text-transparent">Directly in Your Browser.</span>
+        </h1>
+        <p class="mt-3.5 text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Compress files, convert formats, generate styled QR codes, and format strings with lightning speed. No servers, no signups, no limits.
+        </p>
+
+        <!-- Quick Tool Jump Pills -->
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs font-medium">
+            <span class="text-slate-600 dark:text-slate-400">Quick Tools:</span>
+            <button onclick="switchTab('compressor')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-500 text-slate-700 dark:text-slate-300 transition">🖼️ Compress Images</button>
+            <button onclick="switchTab('converter')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-500 text-slate-700 dark:text-slate-300 transition">🔄 Convert Formats</button>
+            <button onclick="switchTab('qrcode')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-500 text-slate-700 dark:text-slate-300 transition">📱 QR Maker</button>
+            <button onclick="switchTab('texttools')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-500 text-slate-700 dark:text-slate-300 transition">✍️ Text Utility</button>
+            <button onclick="switchTab('palette')" class="px-2.5 py-1 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-500 text-slate-700 dark:text-slate-300 transition">🎨 Color Studio</button>
+        </div>
+    </section>
+
+    <!-- Main Content & Tools Section with Sidebar Layout for High Ad Impressions -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT 8-9 COLS: Active Tool Stage -->
+            <div class="lg:col-span-8 xl:col-span-9 space-y-8">
+                
+                <!-- ============================================== -->
+                <!-- TOOL 1: SMART IMAGE COMPRESSOR & RESIZER -->
+                <!-- ============================================== -->
+                <section id="compressor-tool" class="tool-card active bg-white dark:bg-darkCard rounded-2xl border border-slate-200 dark:border-darkBorder shadow-sm p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-darkBorder">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 rounded-xl bg-brand-100 dark:bg-brand-950/80 text-brand-600 dark:text-brand-400">
+                                <i data-lucide="minimize-2" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Smart Image Compressor &amp; Resizer</h2>
+                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Shrink image KB up to 90% without visible loss. 100% in-browser.</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Client-Side Privacy
+                        </span>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div class="mt-6">
+                        <div id="compressor-dropzone" class="dropzone border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-400 rounded-2xl p-8 text-center cursor-pointer transition-all duration-200 bg-slate-50/50 dark:bg-slate-800/30">
+                            <input type="file" id="compressor-file-input" accept="image/png, image/jpeg, image/webp" class="hidden">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="w-14 h-14 rounded-full bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center shadow-inner">
+                                    <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
+                                        Drag &amp; drop your image here, or <span class="text-brand-600 dark:text-brand-400 underline">browse</span>
+                                    </p>
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Supports PNG, JPG, JPEG, WEBP up to 50MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls & Live Result (Hidden until file selected) -->
+                    <div id="compressor-workspace" class="hidden mt-6 space-y-6">
+                        <!-- Compression Settings -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Compression Quality</label>
+                                    <span id="quality-val" class="text-xs font-mono font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950 px-2 py-0.5 rounded">75%</span>
+                                </div>
+                                <input type="range" id="compress-quality" min="10" max="100" value="75" class="w-full accent-brand-600 cursor-pointer">
+                                <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                                    <span>Max Compression</span>
+                                    <span>Balanced</span>
+                                    <span>Best Quality</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Max Dimension (Resize)</label>
+                                    <span id="scale-val" class="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">Original</span>
+                                </div>
+                                <select id="compress-resize" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                    <option value="1">Original Resolution (100%)</option>
+                                    <option value="0.75">Scale to 75% Width/Height</option>
+                                    <option value="0.5">Scale to 50% Width/Height</option>
+                                    <option value="0.25">Scale to 25% Width/Height</option>
+                                    <option value="1920">Max 1080p (1920px max width)</option>
+                                    <option value="1280">Max 720p (1280px max width)</option>
+                                    <option value="800">Max Web Standard (800px max width)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Stats Banner -->
+                        <div class="grid grid-cols-3 gap-3 text-center">
+                            <div class="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                                <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">Original Size</span>
+                                <span id="comp-original-size" class="text-sm sm:text-base font-extrabold text-slate-800 dark:text-slate-200 font-mono">0 KB</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-brand-50 dark:bg-brand-950/60 border border-brand-200 dark:border-brand-900">
+                                <span class="text-[11px] font-semibold text-brand-600 dark:text-brand-400 block">Compressed Size</span>
+                                <span id="comp-new-size" class="text-sm sm:text-base font-extrabold text-brand-600 dark:text-brand-400 font-mono">0 KB</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900">
+                                <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 block">Savings</span>
+                                <span id="comp-savings" class="text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">-0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Live Side-by-Side Preview -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Original Preview</span>
+                                <div class="h-56 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-800 relative group">
+                                    <img id="comp-preview-original" src="" alt="Original Image" class="max-h-full max-w-full object-contain">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider">Compressed Result</span>
+                                <div class="h-56 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center border border-brand-300 dark:border-brand-900/60 relative group">
+                                    <img id="comp-preview-compressed" src="" alt="Compressed Preview" class="max-h-full max-w-full object-contain">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons & Download -->
+                        <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                            <button id="download-compressed-btn" onclick="triggerDirectAdAction(downloadCompressedImage)" class="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white shadow-lg shadow-brand-500/25 transition active:scale-[0.98]">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>Download Compressed Image</span>
+                            </button>
+                            <button onclick="resetCompressor()" class="w-full sm:w-auto px-4 py-3.5 rounded-xl text-sm font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+
+
+                    <!-- How to use guide (Boosts On-Page Retention & Ad Impressions) -->
+                    <div class="mt-6 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl text-xs text-slate-600 dark:text-slate-400 space-y-2">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                            <i data-lucide="info" class="w-3.5 h-3.5 text-brand-500"></i> How Image Compression Works Locally:
+                        </h4>
+                        <p>1. Drag and drop any JPG, PNG, or WEBP image. 2. Move the slider to set your desired compression level (70%-80% is recommended for web). 3. Click download. The file is rendered locally on HTML5 Canvas without reaching any remote server.</p>
+                    </div>
+                </section>
+
+                <!-- ============================================== -->
+                <!-- TOOL 2: MULTI-FORMAT IMAGE CONVERTER -->
+                <!-- ============================================== -->
+                <section id="converter-tool" class="tool-card hidden bg-white dark:bg-darkCard rounded-2xl border border-slate-200 dark:border-darkBorder shadow-sm p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-darkBorder">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400">
+                                <i data-lucide="repeat" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Multi-Format Image Converter</h2>
+                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Convert JPG, PNG, WEBP, and BMP instantly in batch or single mode.</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800 self-start sm:self-auto">
+                            <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Batch Ready
+                        </span>
+                    </div>
+
+                    <!-- Converter Dropzone -->
+                    <div class="mt-6">
+                        <div id="converter-dropzone" class="dropzone border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-purple-500 dark:hover:border-purple-400 rounded-2xl p-8 text-center cursor-pointer transition-all bg-slate-50/50 dark:bg-slate-800/30">
+                            <input type="file" id="converter-file-input" accept="image/*" multiple class="hidden">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="w-14 h-14 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shadow-inner">
+                                    <i data-lucide="layers" class="w-7 h-7"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
+                                        Drop images to convert (Single or Multiple)
+                                    </p>
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Convert to PNG, JPG, WEBP, or BMP</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Converter Workspace -->
+                    <div id="converter-workspace" class="hidden mt-6 space-y-5">
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="w-full sm:w-auto">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Convert Target Format</label>
+                                <div class="flex flex-wrap gap-2" id="format-selector">
+                                    <button onclick="setTargetFormat('image/webp', this)" class="format-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm">WEBP</button>
+                                    <button onclick="setTargetFormat('image/png', this)" class="format-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">PNG</button>
+                                    <button onclick="setTargetFormat('image/jpeg', this)" class="format-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">JPG</button>
+                                    <button onclick="setTargetFormat('image/bmp', this)" class="format-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">BMP</button>
+                                </div>
+                            </div>
+                            <div class="w-full sm:w-auto flex items-center gap-2">
+                                <button id="convert-all-btn" onclick="triggerDirectAdAction(processBatchConversion)" class="w-full sm:w-auto px-6 py-2.5 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-500/20 transition flex items-center justify-center gap-1.5">
+                                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> Convert &amp; Download ZIP
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Converted Items List -->
+                        <div id="converter-items-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+
+                </section>
+
+                <!-- ============================================== -->
+                <!-- TOOL 3: CUSTOM QR CODE GENERATOR -->
+                <!-- ============================================== -->
+                <section id="qrcode-tool" class="tool-card hidden bg-white dark:bg-darkCard rounded-2xl border border-slate-200 dark:border-darkBorder shadow-sm p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-darkBorder">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 rounded-xl bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400">
+                                <i data-lucide="qr-code" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Custom QR Code Studio</h2>
+                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Generate high-res QR codes with custom colors and instant vector download.</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800 self-start sm:self-auto">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Custom Colors
+                        </span>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6">
+                        <!-- Left QR Inputs (7 cols) -->
+                        <div class="md:col-span-7 space-y-4">
+                            <!-- Type selector tabs -->
+                            <div class="flex flex-wrap gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl text-xs font-medium">
+                                <button onclick="setQrType('url', this)" class="qr-type-tab active px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm">URL / Link</button>
+                                <button onclick="setQrType('text', this)" class="qr-type-tab px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900">Plain Text</button>
+                                <button onclick="setQrType('wifi', this)" class="qr-type-tab px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900">Wi-Fi</button>
+                                <button onclick="setQrType('email', this)" class="qr-type-tab px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900">Email</button>
+                            </div>
+
+                            <!-- Input form -->
+                            <div id="qr-input-container" class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5" id="qr-label">Website URL</label>
+                                    <input type="text" id="qr-content" value="https://toolsphere.app" placeholder="https://example.com" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                                </div>
+
+                                <!-- Wi-Fi Specific Fields (Hidden by default) -->
+                                <div id="wifi-fields" class="hidden space-y-3">
+                                    <input type="text" id="wifi-ssid" placeholder="Network SSID (Name)" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white">
+                                    <input type="text" id="wifi-pass" placeholder="Password" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white">
+                                    <select id="wifi-type" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs">
+                                        <option value="WPA">WPA/WPA2</option>
+                                        <option value="WEP">WEP</option>
+                                        <option value="nopass">No Encryption</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Color Customization -->
+                            <div class="grid grid-cols-2 gap-3 pt-2">
+                                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase block">Foreground</span>
+                                        <span id="qr-color-dark-val" class="text-xs font-mono font-bold">#000000</span>
+                                    </div>
+                                    <input type="color" id="qr-color-dark" value="#000000" class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0">
+                                </div>
+                                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                                    <div>
+                                        <span class="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase block">Background</span>
+                                        <span id="qr-color-light-val" class="text-xs font-mono font-bold">#FFFFFF</span>
+                                    </div>
+                                    <input type="color" id="qr-color-light" value="#FFFFFF" class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right QR Live Preview & Download (5 cols) -->
+                        <div class="md:col-span-5 flex flex-col items-center justify-center p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-center">
+                            <div class="p-4 bg-white rounded-2xl shadow-md border border-slate-100 flex items-center justify-center min-w-[200px] min-h-[200px]" id="qr-canvas-holder">
+                                <div id="qrcode-box"></div>
+                            </div>
+                            <div class="mt-4 w-full space-y-2">
+                                <button onclick="triggerDirectAdAction(downloadQRCodePNG)" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 transition active:scale-95">
+                                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Download High-Res PNG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================== -->
+                <!-- TOOL 4: TEXT & CASE UTILITY SUITE -->
+                <!-- ============================================== -->
+                <section id="texttools-tool" class="tool-card hidden bg-white dark:bg-darkCard rounded-2xl border border-slate-200 dark:border-darkBorder shadow-sm p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-darkBorder">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400">
+                                <i data-lucide="type" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Smart Text &amp; Case Utilities</h2>
+                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Instant word count, case formatting, slug generation, and string cleanup.</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 self-start sm:self-auto">
+                            <i data-lucide="activity" class="w-3.5 h-3.5"></i> Live Stats
+                        </span>
+                    </div>
+
+                    <!-- Live Metrics Counter Strip -->
+                    <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase">Words</span>
+                            <span id="text-word-count" class="text-lg font-extrabold text-slate-900 dark:text-white font-mono block">0</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase">Characters</span>
+                            <span id="text-char-count" class="text-lg font-extrabold text-slate-900 dark:text-white font-mono block">0</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase">Sentences</span>
+                            <span id="text-sentence-count" class="text-lg font-extrabold text-slate-900 dark:text-white font-mono block">0</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                            <span class="text-[11px] font-bold text-slate-500 uppercase">Reading Time</span>
+                            <span id="text-reading-time" class="text-lg font-extrabold text-brand-600 dark:text-brand-400 font-mono block">0s</span>
+                        </div>
+                    </div>
+
+                    <!-- Text Area -->
+                    <div class="mt-4">
+                        <textarea id="text-input" rows="7" placeholder="Type or paste your text here to transform or analyze..." class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm text-slate-900 dark:text-white font-mono leading-relaxed transition"></textarea>
+                    </div>
+
+                    <!-- Quick Transform Action Grid -->
+                    <div class="mt-4 space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block">Case &amp; Format Transforms:</span>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="transformText('uppercase')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">UPPERCASE</button>
+                            <button onclick="transformText('lowercase')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">lowercase</button>
+                            <button onclick="transformText('titlecase')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">Title Case</button>
+                            <button onclick="transformText('sentencecase')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">Sentence case</button>
+                            <button onclick="transformText('camelcase')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">camelCase</button>
+                            <button onclick="transformText('kebabcase')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">kebab-case</button>
+                            <button onclick="transformText('snakecase')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">snake_case</button>
+                            <button onclick="transformText('slugify')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">URL Slugify</button>
+                            <button onclick="transformText('removespaces')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-300 transition">Clean Extra Spaces</button>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Copy & Clear Strip -->
+                    <div class="mt-5 flex items-center justify-between pt-4 border-t border-slate-100 dark:border-darkBorder">
+                        <button onclick="clearText()" class="px-4 py-2 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
+                            Clear Text
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyTextToClipboard()" class="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-500/20 transition active:scale-95">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy to Clipboard
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================== -->
+                <!-- TOOL 5: COLOR PALETTE & STUDIO (Bonus Utility) -->
+                <!-- ============================================== -->
+                <section id="palette-tool" class="tool-card hidden bg-white dark:bg-darkCard rounded-2xl border border-slate-200 dark:border-darkBorder shadow-sm p-5 sm:p-7">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-100 dark:border-darkBorder">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 rounded-xl bg-pink-100 dark:bg-pink-950/80 text-pink-600 dark:text-pink-400">
+                                <i data-lucide="palette" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Image Color Palette Studio</h2>
+                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Extract dominant hex colors and generate CSS palettes from any image.</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-pink-50 text-pink-700 dark:bg-pink-950/60 dark:text-pink-300 border border-pink-200 dark:border-pink-800 self-start sm:self-auto">
+                            <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Auto Extractor
+                        </span>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div class="mt-6">
+                        <div id="palette-dropzone" class="dropzone border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-pink-500 rounded-2xl p-8 text-center cursor-pointer transition-all bg-slate-50/50 dark:bg-slate-800/30">
+                            <input type="file" id="palette-file-input" accept="image/*" class="hidden">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="w-14 h-14 rounded-full bg-pink-50 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 flex items-center justify-center shadow-inner">
+                                    <i data-lucide="pipette" class="w-7 h-7"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm sm:text-base font-semibold text-slate-800 dark:text-slate-200">
+                                        Upload an image to extract its color palette
+                                    </p>
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Generates HEX, RGB, and Tailwind CSS code</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extracted Color Swatches -->
+                    <div id="palette-workspace" class="hidden mt-6 space-y-5">
+                        <div class="grid grid-cols-2 sm:grid-cols-6 gap-3" id="palette-swatches">
+                            <!-- Swatches rendered here -->
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-xs overflow-x-auto relative">
+                            <div class="flex justify-between items-center mb-2 pb-1 border-b border-slate-800">
+                                <span class="text-slate-400">CSS Palette Output:</span>
+                                <button onclick="copyCssPalette()" class="text-brand-400 hover:text-brand-300 font-sans font-bold flex items-center gap-1">
+                                    <i data-lucide="copy" class="w-3 h-3"></i> Copy CSS
+                                </button>
+                            </div>
+                            <pre id="palette-css-code" class="text-emerald-400"></pre>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- RIGHT 3-4 COLS: Persistent Sidebar with High-Performing Adsterra Ad Unit -->
+            <aside class="lg:col-span-4 xl:col-span-3 space-y-6">
+                
+                <!-- ============================================== -->
+                <!-- ADSTERRA AD SLOT 3: STICKY SIDEBAR BANNER -->
+                <!-- Recommended: 300x250 Medium Rectangle / 160x600 -->
+                <!-- ============================================== -->
+                <div class="sticky top-20 space-y-6">
+                    
+                    <div id="adsterra-sidebar-slot" class="ad-placeholder-container min-h-[300px] w-full rounded-2xl bg-white dark:bg-darkCard border border-slate-200 dark:border-darkBorder shadow-sm p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <div class="ad-tag-label flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-3">
+                            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i>
+                            <span>Sponsored Link (300x250)</span>
+                        </div>
+                        
+                        <!-- ADSTERRA CODE INJECTION POINT: SIDEBAR AD -->
+                        <div class="ad-content-slot w-full py-8 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-xs text-slate-600 dark:text-slate-400 font-mono">
+                            <i data-lucide="layout" class="w-8 h-8 text-slate-300 dark:text-slate-600 mb-2"></i>
+                            <span>[ Adsterra 300x250 / 300x600 ]</span>
+                            <span class="text-[10px] text-slate-600 dark:text-slate-400 mt-1">High eCPM Sidebar Placement</span>
+                        </div>
+
+                        <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-3">Ads help keep ToolSphere 100% free and serverless.</p>
+                    </div>
+
+                    <!-- Privacy & Speed Guarantee Card -->
+                    <div class="p-5 rounded-2xl bg-gradient-to-br from-brand-900 to-indigo-950 text-white shadow-md">
+                        <div class="flex items-center gap-2 mb-2.5">
+                            <i data-lucide="lock" class="w-4 h-4 text-emerald-400"></i>
+                            <h3 class="font-bold text-sm">100% Private Processing</h3>
+                        </div>
+                        <p class="text-xs text-brand-200 leading-relaxed">
+                            No files ever leave your computer. Everything is calculated using client-side JavaScript and HTML5 Canvas.
+                        </p>
+                        <div class="mt-4 pt-3 border-t border-brand-800/60 flex items-center justify-between text-[11px] text-brand-300">
+                            <span>Zero API Cost</span>
+                            <span>Unlimited Usage</span>
+                        </div>
+                    </div>
+
+                    <!-- Mini Quick Stats -->
+                    <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/40 border border-slate-200 dark:border-darkBorder text-xs space-y-2">
+                        <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                            <span>Total Tools Available:</span>
+                            <span class="font-bold text-slate-900 dark:text-white">5 Active</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                            <span>Local Latency:</span>
+                            <span class="font-bold text-emerald-500">&lt; 15ms</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                            <span>Server Cost:</span>
+                            <span class="font-bold text-brand-500">$0.00 / mo</span>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Rich SEO & FAQ Section (Crucial for Organic Traffic & Ad Impression Growth) -->
+    <section class="border-t border-slate-200 dark:border-darkBorder bg-slate-100/60 dark:bg-slate-900/40 py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Learn more about our zero-upload, browser-native utility architecture.</p>
+            </div>
+
+            <div class="space-y-3" id="faq-accordion">
+                <!-- FAQ 1 -->
+                <div class="faq-item border border-slate-200 dark:border-slate-800 bg-white dark:bg-darkCard rounded-xl overflow-hidden shadow-sm">
+                    <button class="faq-btn w-full px-5 py-4 text-left font-semibold text-sm sm:text-base text-slate-800 dark:text-slate-200 flex justify-between items-center">
+                        <span>Is ToolSphere really 100% free with no hidden limits?</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-4 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/60 pt-3">
+                        Yes! ToolSphere is completely free without limits, watermarks, or subscription paywalls. We are supported solely through unobtrusive display advertisements.
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-item border border-slate-200 dark:border-slate-800 bg-white dark:bg-darkCard rounded-xl overflow-hidden shadow-sm">
+                    <button class="faq-btn w-full px-5 py-4 text-left font-semibold text-sm sm:text-base text-slate-800 dark:text-slate-200 flex justify-between items-center">
+                        <span>Are my confidential files or images uploaded to any server?</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-4 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/60 pt-3">
+                        No! ToolSphere uses HTML5 Canvas and JavaScript FileReader to process images and files entirely inside your web browser. Your data never touches any remote server, ensuring 100% GDPR and corporate compliance.
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item border border-slate-200 dark:border-slate-800 bg-white dark:bg-darkCard rounded-xl overflow-hidden shadow-sm">
+                    <button class="faq-btn w-full px-5 py-4 text-left font-semibold text-sm sm:text-base text-slate-800 dark:text-slate-200 flex justify-between items-center">
+                        <span>Can I convert and compress images in batch?</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-4 text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/60 pt-3">
+                        Yes, our Multi-Format Converter allows you to drop multiple files at once. The converted results can be downloaded individually or as a single packaged ZIP archive with zero waiting time.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bottom Page Adsterra Banner Slot -->
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="ad-placeholder-container min-h-[90px] w-full flex flex-col items-center justify-center rounded-xl bg-slate-100/70 dark:bg-slate-800/40 border border-dashed border-slate-300 dark:border-slate-700 p-2 text-center">
+            <div class="ad-content-slot flex items-center justify-center w-full overflow-hidden">
+                <script>
+                  atOptions = {
+                    'key' : 'c561e3c8227d2736815a3e3daa566083',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://www.highrevenueformat.com/c561e3c8227d2736815a3e3daa566083/invoke.js"></script>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-darkBorder bg-white dark:bg-darkBg py-8 text-slate-500 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-xs">⚡</div>
+                <span class="font-bold text-slate-800 dark:text-slate-200">ToolSphere SaaS</span>
+                <span>— Fast Client-Side Tool Suite</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#compressor-tool" onclick="switchTab('compressor')" class="hover:text-brand-600 transition">Compressor</a>
+                <a href="#converter-tool" onclick="switchTab('converter')" class="hover:text-brand-600 transition">Converter</a>
+                <a href="#qrcode-tool" onclick="switchTab('qrcode')" class="hover:text-brand-600 transition">QR Maker</a>
+                <a href="#texttools-tool" onclick="switchTab('texttools')" class="hover:text-brand-600 transition">Text Suite</a>
+            </div>
+            <div>
+                <span>&copy; <span id="year-copy">2026</span> ToolSphere. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================== -->
+    <!-- ADSTERRA AD SLOT 4: STICKY BOTTOM BANNER -->
+    <!-- High-CTR Footer Banner (Dismissible) -->
+    <!-- ============================================== -->
+    <div id="adsterra-sticky-footer" class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 shadow-2xl py-2 px-4 transition-transform duration-300">
+        <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex-grow flex items-center justify-center overflow-hidden">
+                <!-- ADSTERRA CODE INJECTION POINT: STICKY FOOTER (728x90) -->
+                <script>
+                  atOptions = {
+                    'key' : 'c561e3c8227d2736815a3e3daa566083',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                  };
+                </script>
+                <script src="https://www.highrevenueformat.com/c561e3c8227d2736815a3e3daa566083/invoke.js"></script>
+            </div>
+            <button onclick="dismissStickyAd()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex-shrink-0" aria-label="Close Ad">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-16 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- App JavaScript Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

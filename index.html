@@ -25,10 +25,29 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 
-    <!-- Google Fonts -->
+    <!-- High-Priority Resource Preconnecting for Instant Adsterra Ad Delivery -->
+    <link rel="preconnect" href="https://www.highrevenueformat.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.highrevenueformat.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Optimized Google Fonts with swap display -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Instant Dark Mode Bootstrap to Prevent Theme Flash -->
+    <script>
+        (function() {
+            const saved = localStorage.getItem('toolsphere_theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -44,7 +63,6 @@
                             200: '#c7d2fe',
                             300: '#a5b4fc',
                             400: '#818cf8',
-                            50: '#6366f1',
                             500: '#6366f1',
                             600: '#4f46e5',
                             700: '#4338ca',
@@ -57,7 +75,7 @@
                         darkBorder: '#1f2937'
                     },
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
                     }
                 }
@@ -65,18 +83,11 @@
         }
     </script>
 
-    <!-- External Client-Side CDN Libraries (Zero Paid APIs) -->
-    <!-- QRCode.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- JSZip for batch downloads -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <!-- Canvas Confetti for user delight on processing -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Custom CSS -->
+    <!-- Custom CSS (Critical styling) -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Deferred Lucide Icons for immediate visual rendering -->
+    <script defer src="https://unpkg.com/lucide@latest"></script>
 
     <!-- Schema.org Structured Data for SEO -->
     <script type="application/ld+json">
@@ -859,7 +870,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed bottom-16 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <!-- App JavaScript Logic -->
-    <script src="app.js"></script>
+    <!-- App JavaScript Logic (Deferred for fast load) -->
+    <script defer src="app.js"></script>
 </body>
 </html>
